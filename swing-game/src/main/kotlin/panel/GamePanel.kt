@@ -1,8 +1,10 @@
 package arw.simple.game.panel
 
-import arw.simple.game.commons.FormativeConstants
+import arw.simple.game.commons.FormativeConstants.SCREEN_HEIGHT
+import arw.simple.game.commons.FormativeConstants.SCREEN_WIDTH
 import arw.simple.game.handler.KeyHandler
-import arw.simple.game.model.Player
+import arw.simple.game.player.Player
+import arw.simple.game.tile.TileManager
 import java.awt.Color
 import java.awt.Dimension
 import java.awt.Graphics
@@ -12,16 +14,14 @@ import javax.swing.JPanel
 
 class GamePanel: JPanel {
     companion object {
-        private const val MAX_SCREEN_COL = 16
-        private const val MAX_SCREEN_ROW = 12
-        private const val SCREEN_WIDTH = FormativeConstants.TILE_SIZE * MAX_SCREEN_COL
-        private const val SCREEN_HEIGHT = FormativeConstants.TILE_SIZE * MAX_SCREEN_ROW
+
 
         private const val FPS = 60
     }
 
     private val keyHandler: KeyHandler = KeyHandler()
     private val player: Player = Player(this, keyHandler)
+    private val tileManager: TileManager = TileManager(this)
 
 
     constructor() {
@@ -75,6 +75,7 @@ class GamePanel: JPanel {
 
         val graphics2D = g as Graphics2D
 
+        tileManager.draw(graphics2D)
         player.draw(graphics2D)
 
         graphics2D.dispose()

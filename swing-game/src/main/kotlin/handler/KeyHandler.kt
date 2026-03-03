@@ -1,6 +1,6 @@
 package arw.simple.game.handler
 
-import arw.simple.game.model.PlayerMovement
+import arw.simple.game.player.PlayerMovement
 import java.awt.event.KeyEvent
 import java.awt.event.KeyListener
 

@@ -1,4 +1,4 @@
-package arw.simple.game.model
+package arw.simple.game.player
 
 import java.awt.image.BufferedImage
 

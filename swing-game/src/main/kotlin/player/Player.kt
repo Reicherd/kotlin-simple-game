@@ -1,4 +1,4 @@
-package arw.simple.game.model
+package arw.simple.game.player
 
 import arw.simple.game.commons.FormativeConstants
 import arw.simple.game.handler.KeyHandler
