@@ -1,51 +1,67 @@
 package arw.simple.game.tile
 
-import arw.simple.game.commons.FormativeConstants.MAX_SCREEN_COL
-import arw.simple.game.commons.FormativeConstants.MAX_SCREEN_ROW
 import arw.simple.game.commons.FormativeConstants.TILE_SIZE
 import arw.simple.game.model.Tile
 import arw.simple.game.panel.GamePanel
 import java.awt.Graphics2D
+import java.io.BufferedReader
+import java.io.InputStreamReader
 import javax.imageio.ImageIO
 
 class TileManager {
 
+    val tileDesigns: MutableMap<TileDesign, Tile> = mutableMapOf()
     val gamePanel: GamePanel
-    val tiles: MutableList<Tile> = mutableListOf()
+    val mapTileNumber: MutableList<List<TileDesign>> = mutableListOf()
 
     constructor(gamePanel: GamePanel) {
         this.gamePanel = gamePanel
         getTileImage()
+        loadMap("/maps/map01")
     }
 
     fun getTileImage() {
         runCatching {
-            tiles.add(Tile(image = ImageIO.read(javaClass.getResourceAsStream("/tiles/grass.png"))))
-            tiles.add(Tile(image = ImageIO.read(javaClass.getResourceAsStream("/tiles/wall.png"))))
-            tiles.add(Tile(image = ImageIO.read(javaClass.getResourceAsStream("/tiles/water.png"))))
+            tileDesigns[TileDesign.GRASS] =
+                Tile(image = ImageIO.read(javaClass.getResourceAsStream("/tiles/grass.png")))
+            tileDesigns[TileDesign.WALL] =
+                Tile(image = ImageIO.read(javaClass.getResourceAsStream("/tiles/wall.png")))
+            tileDesigns[TileDesign.WATER] =
+                Tile(image = ImageIO.read(javaClass.getResourceAsStream("/tiles/water.png")))
+        }.onFailure {
+            it.printStackTrace()
+        }
+    }
+
+    fun loadMap(mapFile: String) {
+        runCatching {
+
+            val inputStream = javaClass.getResourceAsStream(mapFile)
+                        val bufferedReader = BufferedReader(InputStreamReader(inputStream!!))
+
+            bufferedReader.readLines().forEach { line ->
+                mapTileNumber.add(line.split(" ").map { TileDesign.fromValue(it.toInt()) })
+            }
+
+            bufferedReader.close()
         }.onFailure {
             it.printStackTrace()
         }
     }
 
     fun draw(graphics2D: Graphics2D) {
-        var col = 0
-        var row = 0
         var x = 0
         var y = 0
 
-        while (col < MAX_SCREEN_COL && row < MAX_SCREEN_ROW) {
-            graphics2D.drawImage(tiles[0].image, x, y, TILE_SIZE, TILE_SIZE, null)
-            col++
-            x += TILE_SIZE
+        mapTileNumber.forEach { tiles ->
+            tiles.forEach { tile ->
+                graphics2D.drawImage(tileDesigns[tile]?.image, x, y, TILE_SIZE, TILE_SIZE, null)
 
-            if (col == MAX_SCREEN_COL) {
-                col = 0
-                x = 0
-                row++
-                y += TILE_SIZE
+                x += TILE_SIZE
             }
-
+            x = 0
+            y += TILE_SIZE
         }
+
     }
 }
