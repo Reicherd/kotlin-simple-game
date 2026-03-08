@@ -1,5 +1,5 @@
 package arw.simple.game.player
 
-enum class PlayerMovement {
+enum class PlayerDirection {
     UP, DOWN, LEFT, RIGHT, NONE;
 }

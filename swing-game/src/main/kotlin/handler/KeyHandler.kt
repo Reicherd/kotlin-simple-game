@@ -1,11 +1,11 @@
 package arw.simple.game.handler
 
-import arw.simple.game.player.PlayerMovement
+import arw.simple.game.player.PlayerDirection
 import java.awt.event.KeyEvent
 import java.awt.event.KeyListener
 
 class KeyHandler: KeyListener {
-    var playerMovement = PlayerMovement.NONE
+    var playerDirection = PlayerDirection.NONE
         private set
 
     override fun keyTyped(e: KeyEvent?) {}
@@ -14,10 +14,10 @@ class KeyHandler: KeyListener {
         val code = e?.keyCode
 
         when (code) {
-            KeyEvent.VK_W -> playerMovement = PlayerMovement.UP
-            KeyEvent.VK_S -> playerMovement = PlayerMovement.DOWN
-            KeyEvent.VK_D -> playerMovement = PlayerMovement.RIGHT
-            KeyEvent.VK_A -> playerMovement = PlayerMovement.LEFT
+            KeyEvent.VK_W -> playerDirection = PlayerDirection.UP
+            KeyEvent.VK_S -> playerDirection = PlayerDirection.DOWN
+            KeyEvent.VK_D -> playerDirection = PlayerDirection.RIGHT
+            KeyEvent.VK_A -> playerDirection = PlayerDirection.LEFT
         }
     }
 
@@ -25,7 +25,7 @@ class KeyHandler: KeyListener {
         val code = e?.keyCode
 
         when (code) {
-            KeyEvent.VK_W, KeyEvent.VK_S, KeyEvent.VK_D, KeyEvent.VK_A -> playerMovement = PlayerMovement.NONE
+            KeyEvent.VK_W, KeyEvent.VK_S, KeyEvent.VK_D, KeyEvent.VK_A -> playerDirection = PlayerDirection.NONE
         }
     }
 }

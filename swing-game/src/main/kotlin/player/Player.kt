@@ -1,25 +1,35 @@
 package arw.simple.game.player
 
-import arw.simple.game.commons.FormativeConstants
+import arw.simple.game.commons.FormativeConstants.SCREEN_HEIGHT
+import arw.simple.game.commons.FormativeConstants.SCREEN_WIDTH
+import arw.simple.game.commons.FormativeConstants.TILE_SIZE
 import arw.simple.game.handler.KeyHandler
 import arw.simple.game.panel.GamePanel
 import java.awt.Graphics2D
+import java.awt.Rectangle
 import javax.imageio.ImageIO
 
 class Player(
     val gamePanel: GamePanel,
     val keyHandler: KeyHandler,
-): Entity() {
+): Entity(
+    solidArea = Rectangle(8, 16, 32, 32)
+) {
+    val screenX: Int = (SCREEN_WIDTH / 2) - (TILE_SIZE / 2)
+    val screenY: Int = (SCREEN_HEIGHT / 2) - (TILE_SIZE / 2)
+
     init {
         setDefaultValues()
         getPlayerImage()
     }
 
     fun setDefaultValues() {
-        x = 100
-        y = 100
+        worldX = TILE_SIZE * 23
+        worldY = TILE_SIZE * 21
         speed = 4
-        direction = PlayerMovement.DOWN
+        direction = PlayerDirection.DOWN
+
+        solidArea = Rectangle(8, 16, 32, 32)
     }
 
     override fun getPlayerImage() {
@@ -38,24 +48,19 @@ class Player(
     }
 
     fun update() {
-        when (keyHandler.playerMovement) {
-            PlayerMovement.UP -> {
-                direction = PlayerMovement.UP
-                y -= speed
+        direction = keyHandler.playerDirection
+
+        collisionEnabled = false
+        gamePanel.collisionChecker.checkTile(this)
+
+        if (!collisionEnabled) {
+            when (direction) {
+                PlayerDirection.UP -> worldY -= speed
+                PlayerDirection.DOWN -> worldY += speed
+                PlayerDirection.LEFT -> worldX -= speed
+                PlayerDirection.RIGHT -> worldX += speed
+                else -> {}
             }
-            PlayerMovement.DOWN -> {
-                direction = PlayerMovement.DOWN
-                y += speed
-            }
-            PlayerMovement.LEFT -> {
-                direction = PlayerMovement.LEFT
-                x -= speed
-            }
-            PlayerMovement.RIGHT -> {
-                direction = PlayerMovement.RIGHT
-                x += speed
-            }
-            else -> return
         }
 
         spriteCounter++
@@ -68,14 +73,14 @@ class Player(
 
     fun draw(graphics2D: Graphics2D) {
         val image = when (direction) {
-            PlayerMovement.UP -> if (spriteNumber == 1) up1 else up2
-            PlayerMovement.DOWN ->  if (spriteNumber == 1) down1 else down2
-            PlayerMovement.LEFT ->  if (spriteNumber == 1) left1 else left2
-            PlayerMovement.RIGHT ->  if (spriteNumber == 1) right1 else right2
-            else -> return
+            PlayerDirection.UP -> if (spriteNumber == 1) up1 else up2
+            PlayerDirection.DOWN ->  if (spriteNumber == 1) down1 else down2
+            PlayerDirection.LEFT ->  if (spriteNumber == 1) left1 else left2
+            PlayerDirection.RIGHT ->  if (spriteNumber == 1) right1 else right2
+            PlayerDirection.NONE ->  down1
         }
 
-        graphics2D.drawImage(image, x, y, FormativeConstants.TILE_SIZE, FormativeConstants.TILE_SIZE, null)
+        graphics2D.drawImage(image, screenX, screenY, TILE_SIZE, TILE_SIZE, null)
     }
 
 

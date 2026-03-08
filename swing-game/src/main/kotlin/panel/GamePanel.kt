@@ -1,5 +1,6 @@
 package arw.simple.game.panel
 
+import arw.simple.game.collision.CollisionChecker
 import arw.simple.game.commons.FormativeConstants.SCREEN_HEIGHT
 import arw.simple.game.commons.FormativeConstants.SCREEN_WIDTH
 import arw.simple.game.handler.KeyHandler
@@ -20,9 +21,9 @@ class GamePanel: JPanel {
     }
 
     private val keyHandler: KeyHandler = KeyHandler()
-    private val player: Player = Player(this, keyHandler)
-    private val tileManager: TileManager = TileManager(this)
-
+    val player: Player = Player(this, keyHandler)
+    val tileManager: TileManager = TileManager(this)
+    val collisionChecker: CollisionChecker = CollisionChecker(this)
 
     constructor() {
         this.preferredSize = Dimension(SCREEN_WIDTH, SCREEN_HEIGHT)
